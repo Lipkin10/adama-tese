@@ -1,0 +1,665 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>A governança da liderança na colaboração entre profissionais e IA generativa — Felipe Lipkin</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:ital,opsz,wght@0,8..60,400;0,8..60,500;0,8..60,600;0,8..60,700;1,8..60,400&family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700;9..144,900&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --purple-950:#33163b;
+    --purple-900:#4a2054;
+    --purple-800:#5c2662;
+    --purple-700:#6f2f79;
+    --purple-500:#8542b3;
+    --purple-100:#efe2f5;
+    --orange-600:#e8703c;
+    --orange-500:#f5824a;
+    --orange-100:#fde7db;
+    --bg:#fbf9f7;
+    --surface:#ffffff;
+    --text:#241a2b;
+    --text-dim:#5a4f63;
+    --border:#e6ddec;
+    --serif: 'Source Serif 4', Georgia, 'Times New Roman', serif;
+    --display: 'Fraunces', Georgia, serif;
+    --sans: 'Inter', -apple-system, sans-serif;
+  }
+  :root:not([data-theme="light"]){
+    @media (prefers-color-scheme: dark){
+      --bg:#1c1420;
+      --surface:#241a2b;
+      --text:#f1e9f4;
+      --text-dim:#c6b9cf;
+      --border:#3a2c43;
+      --purple-100:#3a2745;
+      --orange-100:#4a2f22;
+    }
+  }
+  :root[data-theme="dark"]{
+    --bg:#1c1420;
+    --surface:#241a2b;
+    --text:#f1e9f4;
+    --text-dim:#c6b9cf;
+    --border:#3a2c43;
+    --purple-100:#3a2745;
+    --orange-100:#4a2f22;
+  }
+
+  *{box-sizing:border-box;}
+  body{
+    margin:0;
+    background:var(--bg);
+    color:var(--text);
+    font-family:var(--serif);
+    line-height:1.7;
+    -webkit-font-smoothing:antialiased;
+  }
+  a{color:var(--purple-700);}
+  :root[data-theme="dark"] a, :root:not([data-theme="light"]) a { }
+  @media (prefers-color-scheme: dark){ a{ color:#c9a3e0; } }
+  :root[data-theme="dark"] a{ color:#c9a3e0; }
+
+  /* ===== HERO / CAPA ===== */
+  .hero{
+    position:relative;
+    background: linear-gradient(160deg, var(--purple-900) 0%, var(--purple-800) 55%, var(--purple-700) 100%);
+    color:#fff;
+    padding: 4.5rem 1.5rem 7rem;
+    overflow:hidden;
+  }
+  .hero::after{
+    content:"";
+    position:absolute;
+    left:0; right:0; bottom:-2px;
+    height:90px;
+    background:var(--bg);
+    border-radius:50% 50% 0 0 / 100% 100% 0 0;
+    transform:scaleX(1.4);
+  }
+  .hero-inner{
+    max-width:760px;
+    margin:0 auto;
+    position:relative;
+    z-index:2;
+  }
+  .kicker{
+    font-family:var(--sans);
+    font-weight:700;
+    letter-spacing:.14em;
+    text-transform:uppercase;
+    font-size:.72rem;
+    color:#ffd8bd;
+    margin-bottom:1.4rem;
+    display:flex;
+    align-items:center;
+    gap:.6rem;
+  }
+  .kicker::before{
+    content:"";
+    width:28px; height:2px;
+    background:var(--orange-500);
+    display:inline-block;
+  }
+  h1.title{
+    font-family:var(--display);
+    font-weight:600;
+    font-size: clamp(1.9rem, 4.4vw, 2.9rem);
+    line-height:1.18;
+    margin:0 0 1.6rem;
+    color:#fff;
+  }
+  .hero-meta{
+    font-family:var(--sans);
+    font-size:.95rem;
+    color:#e8d9ee;
+  }
+  .hero-meta .divider{
+    height:1px;
+    background:rgba(255,255,255,.25);
+    margin:1.2rem 0;
+    width:64px;
+  }
+  .hero-meta strong{color:#fff; font-weight:600;}
+  .author-line{font-size:1.05rem; color:#fff; font-family:var(--sans); font-weight:600; margin-top:1.6rem;}
+  .fdc-url{
+    position:absolute;
+    right:1.8rem; bottom:1.6rem;
+    font-family:var(--sans);
+    font-weight:700;
+    font-size:.8rem;
+    color:#fff;
+    z-index:3;
+    letter-spacing:.03em;
+  }
+
+  /* ===== LAYOUT ===== */
+  .page{
+    max-width:1180px;
+    margin:0 auto;
+    padding:0 1.5rem 5rem;
+    display:grid;
+    grid-template-columns: 250px minmax(0,720px);
+    gap:3.5rem;
+    justify-content:center;
+  }
+  @media (max-width: 880px){
+    .page{grid-template-columns: 1fr; padding-top:1rem;}
+  }
+
+  nav.toc{
+    position:sticky;
+    top:1.5rem;
+    align-self:start;
+    font-family:var(--sans);
+    font-size:.86rem;
+  }
+  @media (max-width: 880px){
+    nav.toc{position:static; margin-bottom:1rem; border-bottom:1px solid var(--border); padding-bottom:1rem;}
+  }
+  nav.toc .toc-label{
+    font-weight:700;
+    text-transform:uppercase;
+    letter-spacing:.1em;
+    font-size:.68rem;
+    color:var(--orange-600);
+    margin-bottom:.9rem;
+  }
+  nav.toc ol{list-style:none; margin:0; padding:0;}
+  nav.toc li{margin-bottom:.55rem;}
+  nav.toc a{
+    text-decoration:none;
+    color:var(--text-dim);
+    display:block;
+    border-left:2px solid transparent;
+    padding-left:.7rem;
+    transition:color .15s, border-color .15s;
+  }
+  nav.toc a:hover{color:var(--purple-700); border-left-color:var(--purple-500);}
+  nav.toc .sub{padding-left:1.5rem; font-size:.82rem;}
+  nav.toc .n{color:var(--orange-600); font-weight:700; margin-right:.35rem;}
+
+  main{min-width:0; padding-top:2.2rem;}
+
+  section{margin-bottom:3.4rem;}
+  section:target, div[id]:target { scroll-margin-top: 1.5rem; }
+
+  .eyebrow{
+    font-family:var(--sans);
+    font-weight:700;
+    text-transform:uppercase;
+    letter-spacing:.12em;
+    font-size:.7rem;
+    color:var(--orange-600);
+    margin-bottom:.5rem;
+  }
+  h2{
+    font-family:var(--display);
+    font-weight:700;
+    color:var(--purple-800);
+    font-size:clamp(1.5rem,3vw,2rem);
+    margin:0 0 1.3rem;
+    line-height:1.25;
+  }
+  :root[data-theme="dark"] h2{color:#e3c4f0;}
+  @media (prefers-color-scheme: dark){ h2{color:#e3c4f0;} }
+  :root[data-theme="light"] h2{color:var(--purple-800);}
+
+  h3{
+    font-family:var(--display);
+    font-weight:600;
+    color:var(--purple-700);
+    font-size:1.28rem;
+    margin:2.4rem 0 1rem;
+  }
+  @media (prefers-color-scheme: dark){ h3{color:#d9b6e8;} }
+  :root[data-theme="dark"] h3{color:#d9b6e8;}
+  :root[data-theme="light"] h3{color:var(--purple-700);}
+
+  p{margin:0 0 1.15rem; font-size:1.04rem; color:var(--text);}
+  .lede{font-size:1.14rem; color:var(--text-dim); font-style:italic;}
+
+  .card{
+    background:var(--surface);
+    border:1px solid var(--border);
+    border-radius:14px;
+    padding:1.8rem 2rem;
+  }
+
+  .abstract{
+    background:var(--purple-100);
+    border-radius:16px;
+    padding:2rem 2.2rem;
+    border:1px solid var(--border);
+  }
+  .abstract h2{margin-top:0;}
+  .keywords{
+    font-family:var(--sans);
+    font-size:.86rem;
+    color:var(--text-dim);
+    margin-top:1.2rem;
+    padding-top:1.2rem;
+    border-top:1px dashed var(--border);
+  }
+  .keywords strong{color:var(--purple-700);}
+
+  .callout{
+    border-left:3px solid var(--orange-500);
+    background:var(--orange-100);
+    padding:1rem 1.3rem;
+    border-radius:0 10px 10px 0;
+    font-family:var(--sans);
+    font-size:.92rem;
+    color:var(--text-dim);
+    margin:1.6rem 0;
+  }
+
+  /* Editorial board */
+  .board{
+    display:flex;
+    flex-wrap:wrap;
+    gap:1.4rem;
+    background: linear-gradient(135deg, var(--purple-700), var(--purple-500));
+    border-radius:18px;
+    padding:1.8rem;
+    margin-top:1.4rem;
+  }
+  .board .member{
+    font-family:var(--sans);
+    color:#fff;
+    text-align:center;
+    width:120px;
+  }
+  .board .avatar{
+    width:64px;height:64px;border-radius:50%;
+    background:rgba(255,255,255,.18);
+    border:2px solid rgba(255,255,255,.5);
+    margin:0 auto .6rem;
+    display:flex;align-items:center;justify-content:center;
+    font-weight:700; font-size:1.1rem;
+  }
+  .board .name{font-size:.78rem; font-weight:600; line-height:1.3;}
+  .board .role{font-size:.68rem; color:#ffd8bd; margin-top:.15rem;}
+
+  /* V model diagram */
+  .model-diagram{
+    background:var(--surface);
+    border:1px solid var(--border);
+    border-radius:18px;
+    padding:2.4rem 1.4rem 1.8rem;
+    text-align:center;
+    margin: 1rem 0 2rem;
+  }
+  .model-diagram .label{
+    font-family:var(--sans);
+    font-weight:700;
+    letter-spacing:.14em;
+    text-transform:uppercase;
+    font-size:.68rem;
+    color:var(--orange-600);
+    margin-bottom:1.6rem;
+  }
+  .model-diagram svg{width:100%; height:auto; max-width:560px;}
+  .model-caption{
+    font-family:var(--serif);
+    font-style:italic;
+    color:var(--purple-700);
+    font-size:.98rem;
+    margin-top:1rem;
+  }
+
+  /* superficies diagram */
+  .surfaces{
+    background:var(--surface);
+    border:1px solid var(--border);
+    border-radius:18px;
+    padding:2rem 1.2rem;
+    margin: 1rem 0 2rem;
+    text-align:center;
+  }
+  .surfaces svg{width:100%; max-width:600px; height:auto;}
+
+  blockquote{
+    font-family:var(--display);
+    font-style:italic;
+    font-weight:500;
+    font-size:1.25rem;
+    color:var(--purple-800);
+    border-left:3px solid var(--purple-500);
+    padding-left:1.4rem;
+    margin:2rem 0;
+    line-height:1.5;
+  }
+  :root[data-theme="dark"] blockquote{color:#e3c4f0;}
+  @media (prefers-color-scheme: dark){ blockquote{color:#e3c4f0;} }
+  :root[data-theme="light"] blockquote{color:var(--purple-800);}
+
+  .refs{
+    font-family:var(--sans);
+    font-size:.86rem;
+    color:var(--text-dim);
+    line-height:1.9;
+  }
+  .refs p{margin:0 0 .9rem; font-size:.86rem; font-family:var(--sans); color:var(--text-dim);}
+
+  .limits-list{
+    font-family:var(--sans);
+    font-size:.94rem;
+    color:var(--text-dim);
+  }
+
+  footer{
+    max-width:1180px;
+    margin:0 auto;
+    padding:2.5rem 1.5rem 4rem;
+    border-top:1px solid var(--border);
+    font-family:var(--sans);
+    font-size:.82rem;
+    color:var(--text-dim);
+    display:flex;
+    justify-content:space-between;
+    flex-wrap:wrap;
+    gap:1rem;
+  }
+
+  .overflow-x{overflow-x:auto;}
+
+  code, .var{
+    font-family:'Source Serif 4', serif;
+    font-style:italic;
+  }
+
+  ::selection{background:var(--purple-100); color:var(--purple-900);}
+</style>
+</head>
+<body>
+
+<div class="hero">
+  <div class="hero-inner">
+    <div class="kicker">Caderno de Ideias · Fundação Dom Cabral</div>
+    <h1 class="title">A governança da liderança na colaboração entre profissionais e inteligência artificial generativa no espaço de trabalho</h1>
+    <div class="hero-meta">
+      Temática: Liderança
+      <div class="divider"></div>
+      <div class="author-line">Felipe Lipkin</div>
+    </div>
+  </div>
+  <div class="fdc-url">fdc.org.br</div>
+</div>
+
+<div class="page">
+
+  <nav class="toc">
+    <div class="toc-label">Sumário</div>
+    <ol>
+      <li><a href="#resumo">Resumo</a></li>
+      <li><a href="#sec1"><span class="n">1</span>O problema: adoção sem retorno</a>
+        <ol>
+          <li class="sub"><a href="#sec1-1">Grandes promessas, adoção sem retorno</a></li>
+          <li class="sub"><a href="#sec1-2">O paradoxo do pensamento crítico</a></li>
+        </ol>
+      </li>
+      <li><a href="#sec2"><span class="n">2</span>O modelo V=⟨H,P,A_θ⟩ e sua dinâmica</a>
+        <ol>
+          <li class="sub"><a href="#sec2-1">3.1 O indivíduo (H)</a></li>
+          <li class="sub"><a href="#sec2-2">3.2 O contexto / Organização (P)</a></li>
+          <li class="sub"><a href="#sec2-3">3.3 O sistema (A_θ)</a></li>
+          <li class="sub"><a href="#sec2-4">4. A dinâmica temporal de V(t)</a></li>
+        </ol>
+      </li>
+      <li><a href="#sec3"><span class="n">3</span>Considerações finais</a></li>
+      <li><a href="#refs">Referências</a></li>
+    </ol>
+  </nav>
+
+  <main>
+
+    <section id="editorial">
+      <div class="eyebrow">Conselho Editorial</div>
+      <h2 style="font-size:1.15rem; margin-bottom:.3rem;">dos Cadernos de Ideias da temática de Liderança da Fundação Dom Cabral</h2>
+      <div class="board">
+        <div class="member"><div class="avatar">PA</div><div class="name">Paulo Almeida, PhD</div><div class="role">Diretor</div></div>
+        <div class="member"><div class="avatar">AE</div><div class="name">Alice Ertal, PhD</div></div>
+        <div class="member"><div class="avatar">LF</div><div class="name">Luciana Ferreira, PhD</div></div>
+        <div class="member"><div class="avatar">BF</div><div class="name">Bruno Fernandes, PhD</div></div>
+      </div>
+    </section>
+
+    <section id="resumo" class="abstract">
+      <div class="eyebrow">Resumo</div>
+      <h2 style="margin-top:0;">Resumo</h2>
+      <p>A adoção de inteligência artificial generativa no trabalho atingiu escala sem precedentes, mas o retorno permanece concentrado numa minoria de organizações. Argumentamos que essa lacuna não se explica pela tecnologia, disponível de modo amplo, e sim pelo método com que profissionais colaboram com sistemas probabilísticos.</p>
+      <p>O problema é, antes de tudo, metodológico, e fechá-lo é tarefa de governança da liderança, a quem cabe estruturar, em toda a companhia, a disciplina de rigor e pensamento crítico que distingue entregas de valor das que apenas aparentam ser pertinentes. Para sustentar o argumento, recuperamos a formalização triádica da colaboração proposta por Ge et al. (2025), V = ⟨H, P, A_θ⟩, e propomos lê-la no tempo, como V(t), o que torna prescritivo um instrumento até então apenas diagnóstico.</p>
+      <p>Distinguimos as naturezas dos três agentes envolvidos na colaboração, suas relações e o ponto em que a colaboração se degrada em <em>workslop</em> — conteúdo que aparenta ter qualidade mas carece de substância para avançar em seu objetivo. Mostramos como a leitura temporal do modelo pode ser traduzida em um currículo de capacitação de lideranças que promove o desenvolvimento da competência avaliativa da equipe, qualifica a curadoria de contexto e adequa o sistema ao território de uso.</p>
+      <p>V(t) é um framework teórico ainda não validado, os instrumentos que mobilizamos são heurísticos, e o currículo é uma proposta cujos resultados restam por avaliar.</p>
+      <div class="keywords"><strong>Palavras-chave:</strong> colaboração humano–IA; pensamento crítico; governança; liderança; soberania cognitiva.</div>
+    </section>
+
+    <!-- ============ SEÇÃO 1 ============ -->
+    <section id="sec1">
+      <div class="eyebrow">Parte 1</div>
+      <h2>O problema: adoção sem retorno</h2>
+
+      <h3 id="sec1-1">1. Grandes promessas que levaram a uma adoção ansiosa e sem retorno</h3>
+      <p>A adoção de inteligência artificial generativa no trabalho repousa sobre uma promessa que parte da premissa de que o profissional equipado com IA produz mais, melhor e com menos esforço. A promessa supõe que a tecnologia opere como as ferramentas e tecnologias que a precederam, nas quais o input correto garante o mesmo output, todas as vezes.</p>
+      <p>A IA generativa, porém, não é uma ferramenta determinística como a calculadora ou o mecanismo de busca. É um sistema probabilístico, que gera o output mais provável, não necessariamente o verdadeiro nem o que se alinha à intenção de quem o solicita. Essa diferença, à primeira vista apenas técnica, desloca as competências exigidas do profissional de um foco na memorização, compreensão e aplicação para os níveis superiores da taxonomia de Bloom: julgar, avaliar e criar (BLOOM, 1956 <em>apud</em> LEE et al., 2025). Operações que, se delegadas de forma irrefletida, tendem a ser atrofiadas.</p>
+      <p>Os números da adoção aumentam em velocidade exponencial, mas revelam uma discrepância no valor gerado pela tecnologia às organizações. Segundo a pesquisa global da McKinsey (2025), 88% das organizações já utilizam IA regularmente em ao menos uma função de negócio, e ainda assim apenas 6% capturam valor significativo dessa utilização (SINGLA et al., 2025).</p>
+      <blockquote>Se a tecnologia está disponível a uns e a outros em igual medida, então não pode ser ela o fator que separa quem extrai valor de quem não extrai.</blockquote>
+      <p>A constatação, portanto, reorienta a pergunta. Não se trata de saber o que indivíduos e organizações fazem com IA, mas de <em>como</em> o fazem.</p>
+
+      <p>O argumento que desenvolvemos localiza esse <em>como</em> não no domínio das ferramentas, mas no do método. A diferença entre colaborar bem ou mal com um sistema probabilístico não se resolve com mais treinamento ferramental, porque o que falha não é a operação da interface. O que falha é o rigor com que o profissional formula sua intenção e avalia o resultado.</p>
+      <p>E se o problema é metodológico, sua superação deixa de ser uma questão individual de habilidade e passa a ser de governança. O rigor na formulação e na avaliação depende de condições que o indivíduo não controla sozinho: o tempo reservado para avaliar, a definição do contexto disponível e os incentivos que premiam ou punem a verificação de outputs maquínicos. Quem dispõe dessas alavancas é a liderança, e por isso cabe a ela estruturar essa governança em toda a companhia.</p>
+      <p>Cabe-lhe garantir que a equipe colabore com IA sob disciplina de rigor metodológico e pensamento crítico, sustentando o alinhamento contínuo com estes sistemas, que distingue entregas de valor de entregas que apenas aparentam ser pertinentes, mas desalinhadas com seu objetivo (NIEDERHOFFER et al., 2025; EDWARDS et al., 2026).</p>
+      <p>Sustentar esse argumento exige um modelo que torne visível onde, exatamente, a colaboração se degrada. Recuperamos para isso a formalização triádica de Ge et al. (2025), que descreve a colaboração como a relação V = ⟨H, P, A_θ⟩ entre um humano que orienta e julga, um contexto que condiciona e um sistema que gera. A esse modelo acrescentamos uma leitura temporal, V(t), que o trata não como fotografia estática, mas como configuração que se transforma ao longo da colaboração.</p>
+      <p>É essa leitura que torna prescritivo um instrumento até então apenas diagnóstico. Resta mostrar como ela se traduz em prática de liderança — é esse o percurso das seções seguintes: do problema que fragilizou a colaboração às naturezas distintas dos três agentes, e destas à dinâmica que os une e à sua tradução em um currículo de capacitação para lideranças que possibilite a adoção de IA de forma responsável e eficaz nas organizações.</p>
+
+      <h3 id="sec1-2">2. O paradoxo do pensamento crítico</h3>
+      <p>Se o fator discriminante é o método, convém perguntar como e onde a colaboração falha para que se entenda a natureza desse método. O sintoma mais visível dessa falha recebeu o nome de <em>workslop</em>, de Niederhoffer et al. (2025): conteúdo gerado por IA que se disfarça de trabalho de qualidade, mas carece de substância para avançar a tarefa. O termo nomeia uma categoria específica de output: o que possui as características superficiais do trabalho pronto — formatação adequada, linguagem fluente, estrutura aparentemente coerente — e no entanto não serve ao propósito pretendido.</p>
+      <p>A pesquisa estima que 15% do conteúdo recebido no trabalho se qualifica como tal, com custo médio de retrabalho de 186 dólares por funcionário ao mês, ao qual se soma um custo social: cerca de metade dos profissionais julgam negativamente o colega que envia <em>workslop</em>, com 42% a vê-lo como menos confiável e 37% como menos inteligente (NIEDERHOFFER et al., 2025).</p>
+      <p>A causa desse fenômeno não está num defeito do sistema. Modelos de linguagem não são geradores de verdade, como observa Walter (2024), e sim sistemas probabilísticos, que preveem a sequência de palavras mais provável dado o contexto recebido. O sistema funciona, mas na direção errada. Dessa natureza decorre o que Ji et al. (2025) descrevem como <strong>desalinhamento</strong>: o sistema executa conforme especificado, mas a especificação não captura por inteiro a intenção do usuário, e o output é tecnicamente impecável e ainda assim não serve ao propósito.</p>
+      <p>O desalinhamento manifesta-se em comportamentos como a fabricação de informação apresentada com tom de certeza, a confirmação acrítica das premissas de quem pergunta e a sustentação de uma abordagem parcial como se fosse a única possível. Cada um simula, respectivamente, factualidade, independência de julgamento e abrangência analítica. O que torna a inadequação insidiosa é que ela não se apresenta como falha, e sim como competência.</p>
+      <p>A interface agrava o próprio problema que deveria ajudar a conter. Ao replicar a experiência de conversar com outro humano em linguagem natural, o chat induz o profissional a atribuir ao sistema uma compreensão cognitiva que ele não possui. Riedl e Weidmann (2025) observam que modelos de linguagem exibem comportamento que leva o usuário a atribuir-lhes intenções, e Long e Magerko (2020), resgatando Joseph Weizenbaum (1966), nomeiam o mecanismo subjacente como <strong>efeito Eliza</strong>: a tendência de conferir ao sistema mais inteligência do que ele de fato tem.</p>
+      <p>A atribuição tem consequência prática direta, pois quanto mais o profissional presume competência no sistema, menos sente a necessidade de verificar seus outputs, gerando o desalinhamento entre a intenção humana e o objetivo compreendido pela máquina.</p>
+
+      <p>Chegamos assim ao paradoxo que organiza este trabalho. A mesma tecnologia que facilita a delegação do trabalho cognitivo desincentiva o exercício da competência que seu uso eficaz demanda. Porém, isso não é um fenômeno inédito: automações por tecnologias ao longo da história já carregavam essa ironia. Bainbridge (1983) observou que, ao mecanizar a tarefa rotineira e deixar ao humano apenas o tratamento das exceções, ela o priva justamente da prática que o prepararia para as exceções mais complexas.</p>
+      <p>A IA generativa radicaliza a ironia, porque a fluência e a aparente completude de seus outputs elevam o limiar de atenção necessário para identificar o que falha. Lee et al. (2025), em estudo com 319 profissionais, identificam uma dualidade sistemática a nível cognitivo comportamental: quanto maior a confiança depositada na IA, menos pensamento crítico o profissional aplica, ao passo que quanto maior sua autoconfiança na própria capacidade, mais o aplica.</p>
+      <p>O efeito erosivo da confiança no sistema, contudo, encontra um freio — e o freio mais forte não é a autoconfiança, mas a disposição habitual à reflexão sobre o próprio trabalho. Profissionais que já refletem por hábito tendem a preservar essa prática ao usar IA; os demais são significativamente mais vulneráveis à erosão da capacidade de pensar criticamente.</p>
+      <p>Um segundo achado contraria a expectativa mais intuitiva sobre como nos preparamos para colaborar com esses instrumentos inteligentes. Analisando milhares de interações humano–IA, Riedl e Weidmann (2025) demonstram que a habilidade técnica do profissional, medida por sua capacidade de resolver o problema sem a IA, não prediz a qualidade da colaboração com ela. O que prediz é uma capacidade de outra natureza, que os autores medem como <strong>Teoria da Mente</strong>: a aptidão para modelar como outro sistema cognitivo, humano ou maquínico, processa informação, antecipa suas limitações e adapta a interação a essa projeção.</p>
+      <p>Convém distingui-la da disposição reflexiva do parágrafo anterior, pois operam sobre objetos diferentes: a disposição reflexiva é um traço metacognitivo que o indivíduo exerce sobre o próprio pensamento, em qualquer contexto; enquanto a Teoria da Mente (ToM) volta-se para o funcionamento do outro com quem se colabora. Ambas são fortes preditores da qualidade da colaboração, por vias distintas. Saber resolver o problema sozinho, portanto, não equivale a saber colaborar com quem o resolve. Investir apenas em expertise técnica, como fazemos ao longo de toda a cadeia educacional formativa, é insuficiente para o profissional que colabora com IA.</p>
+
+      <p>O pensamento crítico é, então, simultaneamente a competência mais demandada e a mais vulnerável nesse contexto, e três barreiras impedem seu exercício. Lee et al. (2025) as identificam como <strong>percepção</strong>, <strong>motivação</strong> e <strong>capacidade</strong>.</p>
+      <div class="callout">
+        <strong>Percepção</strong> — não perceber que a verificação é necessária: profissionais confiam em excesso no sistema (83 de 319 respondentes) ou julgam a tarefa trivial demais para justificá-la (55 de 319).<br><br>
+        <strong>Motivação</strong> — disposição inconsistente, em que falta tempo (44 de 319) ou se entende que verificar não cabe ao próprio escopo.<br><br>
+        <strong>Capacidade</strong> — incapacidade prática, em que o profissional deseja avaliar mas não consegue inspecionar nem revisar o output (58 e 72 de 319, respectivamente).
+      </div>
+      <p>Sobre as três opera ainda a pressão organizacional. O receio de ficar para trás diante da tecnologia, reportado por cerca de 59% dos executivos (MÉNDEZ-SUÁREZ; CUKUSIC; NINČEVIĆ-PAŠALIĆ, 2025), e a liderança que advoga uso indiscriminado convertem a urgência em uso apressado e irrefletido (NIEDERHOFFER et al., 2025). O problema não reside em nenhum agente isolado, e sim na relação entre eles.</p>
+    </section>
+
+    <!-- ============ SEÇÃO 2 ============ -->
+    <section id="sec2">
+      <div class="eyebrow">Parte 2</div>
+      <h2>O modelo V=⟨H,P,A_θ⟩ e sua dinâmica</h2>
+
+      <div class="model-diagram">
+        <div class="label">O modelo da colaboração</div>
+        <svg viewBox="0 0 640 220" xmlns="http://www.w3.org/2000/svg">
+          <text x="30" y="120" font-family="Fraunces, serif" font-style="italic" font-size="42" fill="var(--purple-800)">V =</text>
+          <text x="105" y="122" font-family="Georgia, serif" font-size="42" fill="#b9a8c4">⟨</text>
+
+          <circle cx="230" cy="100" r="46" fill="var(--purple-900)"></circle>
+          <text x="230" y="110" text-anchor="middle" font-family="Inter, sans-serif" font-weight="700" font-size="26" fill="#fff">H</text>
+          <text x="230" y="168" text-anchor="middle" font-family="Inter, sans-serif" font-weight="700" font-size="12" fill="var(--text)">O indivíduo</text>
+          <text x="230" y="186" text-anchor="middle" font-family="Inter, sans-serif" font-size="9.5" fill="var(--text-dim)">intenção · avaliação</text>
+          <text x="230" y="198" text-anchor="middle" font-family="Inter, sans-serif" font-size="9.5" fill="var(--text-dim)">soberania cognitiva</text>
+
+          <text x="290" y="112" text-anchor="middle" font-family="Georgia, serif" font-size="26" fill="#b9a8c4">,</text>
+
+          <circle cx="365" cy="100" r="46" fill="var(--purple-500)"></circle>
+          <text x="365" y="110" text-anchor="middle" font-family="Inter, sans-serif" font-weight="700" font-size="26" fill="#fff">P</text>
+          <text x="365" y="168" text-anchor="middle" font-family="Inter, sans-serif" font-weight="700" font-size="12" fill="var(--text)">O contexto</text>
+          <text x="365" y="186" text-anchor="middle" font-family="Inter, sans-serif" font-size="9.5" fill="var(--text-dim)">curadoria · governança</text>
+          <text x="365" y="198" text-anchor="middle" font-family="Inter, sans-serif" font-size="9.5" fill="var(--text-dim)">como engenharia</text>
+
+          <text x="425" y="112" text-anchor="middle" font-family="Georgia, serif" font-size="26" fill="#b9a8c4">,</text>
+
+          <circle cx="500" cy="100" r="46" fill="var(--orange-500)"></circle>
+          <text x="500" y="110" text-anchor="middle" font-family="Inter, sans-serif" font-weight="700" font-size="22" fill="#fff">A_θ</text>
+          <text x="500" y="168" text-anchor="middle" font-family="Inter, sans-serif" font-weight="700" font-size="12" fill="var(--text)">O sistema</text>
+          <text x="500" y="186" text-anchor="middle" font-family="Inter, sans-serif" font-size="9.5" fill="var(--text-dim)">geração condicionada</text>
+          <text x="500" y="198" text-anchor="middle" font-family="Inter, sans-serif" font-size="9.5" fill="var(--text-dim)">sem intencionalidade</text>
+
+          <text x="565" y="122" font-family="Georgia, serif" font-size="42" fill="#b9a8c4">⟩</text>
+        </svg>
+        <div class="model-caption">V — o valor da colaboração — emerge da composição dos três agentes.</div>
+      </div>
+
+      <h3 id="sec2-1">3.1 O indivíduo (H): intenção, avaliação e soberania cognitiva</h3>
+      <p>O mercado oscila entre duas metáforas para descrever a colaboração, e nenhuma a captura de forma precisa. A primeira trata a IA como ferramenta, operada por comando específico como uma chave para uma fechadura; a segunda, como par humano com quem se partilha a responsabilidade pelo resultado. Lee et al. (2025) observam que a relação profissional–IA não corresponde a nenhuma das duas, e propõem a noção de <strong>stewardship</strong>: o profissional passa a guiar, monitorar e retém a responsabilidade (<em>accountability</em>) pelo trabalho produzido, ainda que a execução material tenha sido delegada à IA.</p>
+      <p>Entre a relação operador–ferramenta e a parceria entre iguais existe, portanto, uma relação assimétrica entre agentes de naturezas distintas, que Ge et al. (2025) formalizam como V = ⟨H, P, A_θ⟩. Para explicar por que e quando essa relação falha, precisamos distinguir não só o que cada agente faz, mas o que cada agente <em>é</em> em sua natureza.</p>
+      <p>A lente que adotamos para essa distinção vem da biologia. Maturana e Varela (1980) descrevem os sistemas vivos como <strong>autopoiéticos</strong>, isto é, capazes de produzir e manter continuamente os próprios componentes num processo circular fechado. Os próprios autores reservam o conceito ao domínio biológico, mas Guattari (1995) e Kastrup, Passos e Escóssia (2009) o estendem aos agenciamentos coletivos e aos processos pelos quais indivíduos e coletivos produzem conhecimento, e é nessa tradição expandida que o mobilizamos.</p>
+      <p>O indivíduo é um sistema plenamente autopoiético, que produz e atualiza sua própria cognição. A IA (A_θ), ao contrário, é uma máquina <strong>alopoiética</strong>, cujo produto é distinto de si e cujos limites são definidos de fora, por outros agentes. A organização (P), por sua vez, opera como sistema autopoiético de segunda ordem, constituído pelo acoplamento dos indivíduos que a compõem.</p>
+
+      <p>Ao indivíduo cabe o que o sistema, por sua natureza, não pode reter. Ge et al. (2025) decompõem essa contribuição em duas funções: a <strong>cognição de requisitos</strong> (H_req), que traduz o domínio sobre um conhecimento com intenção situada em instruções que o sistema possa processar, e a <strong>discriminação de qualidade</strong> (H_eval), que avalia o output contra critérios de adequação ao objetivo pretendido.</p>
+      <p>Lee et al. (2025) convergem ao notar que a accountability permanece com o humano mesmo nos níveis mais altos de delegação a sistemas agênticos autônomos. A palavra decisiva é <em>permanece</em>, pois designa algo que não se transfere junto com a tarefa. Essas funções — articular intenção e avaliar resultado — são atividades cognitivas dos níveis superiores da taxonomia de Bloom.</p>
+      <p>Portanto, o profissional pode ser tecnicamente hábil na operação do sistema e ainda assim produzir <em>workslop</em>, porque a qualidade da colaboração não se decide apenas na interação, mas na capacidade de permanecer autor do próprio pensamento na presença de sistemas inteligentes. Edwards et al. (2026) chamam esta percepção de agência de <strong>soberania cognitiva</strong>.</p>
+      <p>Convém distinguir dois planos que operam juntos para a manutenção desta soberania: existem as habilidades práticas, que se exercem sobre a interação, como articular intenção, curar contexto e avaliar outputs. E existem os processos metacognitivos, que se exercem sobre o próprio pensamento, como refletir sobre a clareza da intenção comunicada, modelar como o sistema processa e calibrar a confiança nos outputs gerados pelo mesmo. Quando o segundo plano falha, o primeiro não se sustenta sozinho.</p>
+      <p>Para ler em que ponto desse espectro um indivíduo se encontra, Edwards et al. (2026) propõem o <strong>Cubo da Soberania Cognitiva</strong> como ferramenta, que cruza três eixos: a) a permeabilidade do raciocínio à IA; b) o acoplamento da IA à identidade do profissional; e c) a plasticidade com que a IA remodela estruturas de significado. Deles derivam oito perfis, do Fazedor ao Parceiro, e entre eles um interessa de modo particular à liderança: o <strong>Terceirizador</strong> — o perfil em que a identidade profissional se reorganiza em torno da delegação sem que o raciocínio seja de fato integrado, e nele a dependência tende a converter-se em <em>workslop</em> como padrão.</p>
+      <p class="lede">Vale ressaltar que o vínculo entre esse perfil e o fenômeno é uma proposição conceitual que articula a tipologia de Edwards et al. à descrição de Niederhoffer et al., não uma relação causal demonstrada.</p>
+
+      <p>É sobre esse plano individual que a governança da liderança encontra suas alavancas mais concretas, e elas se ancoram nos próprios achados que descrevemos.</p>
+      <div class="callout">
+        <strong>Prática diagnóstica</strong> — em encontros 1:1, o líder mapeia em que perfil do Cubo cada um do time se situa, identifica os Terceirizadores e intervém com iniciativas de <em>upskilling</em> para reintegrar o julgamento onde ele foi delegado em excesso.<br><br>
+        <strong>Prática coletiva — a sabatina de outputs</strong> — pares examinam criticamente o trabalho gerado com IA, reforçando um motivador extrínseco: a revisão é priorizada por receio do julgamento alheio na dinâmica coletiva (o segundo motivador mais forte, segundo Lee et al., 2025).<br><br>
+        <strong>Prática formativa</strong> — exercícios deliberados de pensamento crítico, como a decomposição do raciocínio em crença, afirmação, questão, argumento e juízo (OMONIJO, 2025), cultivam a disposição reflexiva habitual — o fator protetor mais forte contra a erosão da capacidade cognitiva crítica.
+      </div>
+
+      <h3 id="sec2-2">3.2 O contexto do projeto/Organização (P): a curadoria e governança como engenharia</h3>
+      <p>Se o indivíduo articula a intenção, ele o faz sempre a partir de um contexto, e é esse contexto que o segundo componente do modelo nomeia. Na formalização de Ge et al. (2025), P designa o contexto do projeto que condiciona a geração. Mei et al. (2025) o tornam preciso ao descrevê-lo como um conjunto estruturado de componentes informacionais, montados por uma função de assemblagem que escrevemos como C = A(c₁, c₂, …, cₙ).</p>
+      <p>São seis esses componentes: as instruções e regras, o conhecimento externo, as definições de ferramentas, a memória de interações anteriores, o estado dinâmico situacional e a mensagem do indivíduo ao sistema (MEI et al., 2025). A <strong>engenharia de contexto</strong> é o nome dessa curadoria, e ela desloca a colaboração da arte de redigir um bom prompt para a disciplina de engenhar a informação que o sistema recebe.</p>
+      <p>A consequência para a prática contraria uma intuição comum. A qualidade da colaboração num projeto real não decorre primariamente de escolher o melhor modelo, e sim de configurar deliberadamente o contexto que se oferece ao sistema. Cabe ao indivíduo curar esse contexto com conhecimento suficiente do problema para discernir o que é relevante do que não é, de modo que o conteúdo recebido seja, nos termos de Mei et al. (2025), não apenas semanticamente similar, mas maximamente informativo para a tarefa. E essa responsabilidade não se transfere: por mais automatizada que seja a montagem do contexto, a responsabilidade pelo output permanece conosco, humanos.</p>
+      <p>Convém demarcar uma fronteira que a prática tende a borrar. A organização delimita o contexto disponível, ao definir quais bases de dados, qual conhecimento de domínio e quais ferramentas estão ao alcance dos colaboradores, mas a curadoria dos requisitos e do contexto que efetivamente se montam para cada tarefa ainda é responsabilidade do indivíduo. As ferramentas, em particular, aparecem em dois planos distintos: a arquitetura de quais ferramentas existem no sistema pertence ao terceiro componente do modelo, A_θ, ao passo que a exposição de suas definições no contexto de uma tarefa específica pertence a P. Manter essa distinção evita confundir o que o sistema <em>é</em> com aquilo que, a cada tarefa, decidimos oferecer a ele.</p>
+
+      <h3 id="sec2-3">3.3 O sistema (A_θ): geração condicionada</h3>
+      <p>Resta o agente cuja natureza melhor explica por que a colaboração exige tanto do humano. A IA simula auto-organização, pois produz respostas coerentes, adapta-se ao contexto e gera texto com aparência de pronto. Carece, no entanto, de clausura operacional: não produz seus próprios componentes, não se automodifica por necessidade interna e não possui intencionalidade. É o indivíduo quem processa o output e produz sentido a partir dele, e nesse gesto se torna o produtor externo daquilo que parecia ser a autopoiese do sistema (MATURANA; VARELA, 1980; WALTER, 2024).</p>
+      <p>Dessa ausência de intencionalidade decorrem os comportamentos que a literatura documenta. Sem objetivo interno que resista à pressão do interlocutor, o sistema gera o padrão mais provável, que com frequência confirma o que o interlocutor deseja ouvir. A fabricação de informação e o aprisionamento numa única abordagem se originam da mesma raiz probabilística (JI et al., 2025).</p>
+      <p>Se a IA possuísse autopoiese plena — se fosse capaz de gerar seus próprios objetivos e verificar a adequação de seus outputs — as habilidades técnicas bastariam para colaborar com ela. Porque não a possui, a responsabilização do indivíduo sobre sua intencionalidade e comunicação com estes sistemas metacognitivamente torna-se intransferível para a IA.</p>
+      <p>A_θ, no modelo, é a constituição do próprio sistema: compreende o modelo e seu treinamento, mas também as configurações que delimitam o que ele pode fazer, como <em>guardrails</em>, os agentes, as habilidades disponíveis, o repertório de ferramentas embutidas no sistema e a arquitetura que as articula. Entre essas configurações está o grau de autonomia concedido ao sistema, que pode escalar de uma assistência pontual à execução independente sob supervisão. Essa constituição é definida pela organização e por quem projeta o sistema, e permanece estável na escala dos ciclos individuais de colaboração, ao contrário de H e P (GE et al., 2025; MEI et al., 2025).</p>
+      <p class="lede">É justamente essa estabilidade que, como veremos, distingue A_θ dos outros dois componentes quando o modelo é lido no tempo. Não quer dizer que o modelo não evolua também, mas tende a ser menos dinâmico que as transformações em H e P.</p>
+
+      <h3 id="sec2-4">4. A dinâmica temporal de V(t)</h3>
+      <p>Caracterizados os três agentes, falta compreender o que acontece quando interagem, pois os problemas da primeira parte não emergem de nenhum deles em isolamento. Ge et al. (2025) descrevem a unidade elementar da colaboração como um ciclo: o indivíduo formula o que precisa (H_req), o sistema gera uma resposta condicionada ao que recebeu (A_θ), o indivíduo avalia se a resposta serve (H_eval) e orienta a tentativa seguinte.</p>
+      <p>O ciclo não é apenas corretivo, mas também constitutivo, porque a própria intenção se refina pela interação e aprendizagem a partir dos outputs produzidos. Requisitos complexos raramente se especificam de uma vez; eles se cristalizam quando os outputs do sistema expõem premissas implícitas e casos-limite que a articulação inicial não capturou. Cada iteração produz, assim, dois resultados: o output revisado e uma compreensão mais precisa do que se buscava.</p>
+      <p class="lede">Vale ressaltar que isso convida a um desconforto estrutural na forma como aprendemos a aprender, uma vez que é pelo erro que se progride na qualidade e êxito da colaboração. Integrá-lo à dinâmica da colaboração é, por si só, uma questão a ser explorada mais profundamente.</p>
+
+      <p>O ciclo reflete três superfícies de interação que o atravessam, e é nelas — não nos agentes isolados — que a colaboração é exitosa ou se rompe.</p>
+
+      <div class="surfaces">
+        <svg viewBox="0 0 560 260" xmlns="http://www.w3.org/2000/svg">
+          <circle cx="120" cy="80" r="42" fill="var(--purple-900)"></circle>
+          <text x="120" y="86" text-anchor="middle" font-family="Inter, sans-serif" font-weight="700" font-size="20" fill="#fff">H</text>
+          <circle cx="440" cy="80" r="42" fill="var(--orange-500)"></circle>
+          <text x="440" y="86" text-anchor="middle" font-family="Inter, sans-serif" font-weight="700" font-size="18" fill="#fff">A_θ</text>
+          <circle cx="280" cy="210" r="42" fill="var(--purple-500)"></circle>
+          <text x="280" y="216" text-anchor="middle" font-family="Inter, sans-serif" font-weight="700" font-size="20" fill="#fff">P</text>
+
+          <line x1="160" y1="80" x2="400" y2="80" stroke="var(--border)" stroke-width="2"></line>
+          <text x="280" y="65" text-anchor="middle" font-family="Inter, sans-serif" font-size="11" fill="var(--text-dim)">o ciclo H_req ↔ H_eval</text>
+
+          <line x1="140" y1="115" x2="255" y2="185" stroke="var(--border)" stroke-width="2"></line>
+          <text x="150" y="160" text-anchor="middle" font-family="Inter, sans-serif" font-size="10" fill="var(--text-dim)">tempo e</text>
+          <text x="150" y="172" text-anchor="middle" font-family="Inter, sans-serif" font-size="10" fill="var(--text-dim)">contexto p/ H_eval</text>
+
+          <line x1="420" y1="115" x2="305" y2="185" stroke="var(--border)" stroke-width="2"></line>
+          <text x="430" y="160" text-anchor="middle" font-family="Inter, sans-serif" font-size="10" fill="var(--text-dim)">contexto e</text>
+          <text x="430" y="172" text-anchor="middle" font-family="Inter, sans-serif" font-size="10" fill="var(--text-dim)">arquitetura</text>
+        </svg>
+      </div>
+
+      <p>A superfície entre indivíduo e IA é o próprio ciclo. A superfície entre indivíduo e organização modula as condições em que esse ciclo pode acontecer, pois a qualidade de H_req e de H_eval depende da disponibilidade de informação e tempo para curar contexto e de tempo protegido para avaliar com rigor os outputs da colaboração. A superfície entre IA e organização é determinada pelo que constitui o contexto disponível pela Organização (P) e pela arquitetura e capacidades do sistema (A_θ).</p>
+      <p>Quando a pressão organizacional comprime a avaliação, é sobre H_eval que ela incide primeiro, e o efeito se propaga, porque um feedback empobrecido alimenta uma próxima iteração igualmente empobrecida.</p>
+
+      <p>Convém perguntar, então, onde exatamente o ciclo se rompe quando produz <em>workslop</em> em vez de valor. A resposta intuitiva apontaria para a geração da IA, com suas tendências à fabricação e à confirmação. Mas essa resposta nos exime da responsabilidade pelos impactos da produção desses sistemas na sociedade, facilmente levando a situações imorais e antiéticas com facilidade e impunidade.</p>
+      <p>Um sistema que fabrica informação pode ser contido por quem verifica, e um que confirma vieses, por quem os questiona. O ponto de vulnerabilidade não é que A_θ produza outputs imperfeitos — todo sistema probabilístico o fará. É que H_eval falha em identificá-los como tais. As três barreiras da seção anterior convergem precisamente aqui: a percepção elimina a avaliação, a motivação a torna intermitente, e a capacidade a torna inoperante mesmo quando percebida como necessária.</p>
+      <blockquote>Quando H_eval colapsa, o ciclo deixa de ser constitutivo e torna-se repetitivo e depreciativo, reproduzindo ou intensificando as inadequações da primeira tentativa em vez de convergir para maior precisão em direção ao objetivo pretendido.</blockquote>
+      <p>Quando o indivíduo modela como o sistema processa, articula requisitos com menos ambiguidade e dirige a avaliação aos pontos de maior vulnerabilidade, promove-se este ciclo constitutivo de forma virtuosa (RIEDL; WEIDMANN, 2025). Num estudo no varejo, o desenho de processos com supervisão humana sobre o sistema, adequado à maturidade do sistema, elevou a receita em 15% frente ao baseline inicial, com intervenção corretiva em cerca de uma a cada oito decisões (SRIDHAR et al., 2026).</p>
+      <p class="lede">O dado vem de decisões supervisionadas num domínio específico, e sua transposição ao trabalho do conhecimento se faz por analogia do mecanismo, não por equivalência de contexto. Importa menos pela magnitude do que pelo que revela: o julgamento humano, exercido no momento oportuno, adiciona valor que o sistema sozinho ainda não produz.</p>
+
+      <p>Cada iteração, vimos, produz dois resultados: o output e uma transformação na competência de quem o produziu. É esse segundo resultado que aqui importa, pois pode seguir em direções opostas. Quem avalia com rigor e refina sua articulação a cada volta desenvolve uma compreensão mais fina de como o sistema processa; quem aceita os outputs sem avaliá-los atrofia a capacidade que a reflexão crítica manteria.</p>
+      <p>O que decide a direção é a reflexão, não a quantidade de uso. Dewey já observava que nem toda experiência educa, e que algumas distorcem o nosso desenvolvimento (DEWEY, 1938 <em>apud</em> KOLB; KOLB, 2021); que o uso irrefletido de fato degrada a competência, em vez de apenas deixar de desenvolvê-la, é o que mostram Lee et al. (2025) e a ironia de Bainbridge (1983). A direção ascendente mantém e expande a própria cognição, e é dela que depende o valor da colaboração, pois o sistema, sem autopoiese alguma, só produz valor quando a reflexão humana o conduz.</p>
+
+      <p><strong>Está aqui a contribuição que propomos.</strong> Ge et al. (2025) descrevem V = ⟨H, P, A_θ⟩ como configuração de um momento dado. Sustentamos que V se move no tempo, e que ler V(t) transforma o diagnóstico em prescrição.</p>
+      <p>H evolui ou regride a cada iteração, conforme a articulação e a avaliação desenvolvem ou atrofiam a competência de H com estes sistemas. P se altera quando a organização redesenha fluxos ou revisa políticas, e nesse mesmo movimento a organização, como sistema autopoiético de segunda ordem, mantém e transforma sua própria competência coletiva, se seus integrantes replicam as boas práticas que caracterizam uma organização que protege seus colaboradores e promove pensamento crítico e profundo na colaboração com sistemas agênticos. A_θ permanece relativamente estável na escala dos ciclos individuais.</p>
+      <p>Tornar visível não apenas o estado de cada componente, mas a direção em que se move, permite localizar nas superfícies de interação o ponto sobre o qual intervir. É essa leitura temporal que dá à governança da liderança seu objeto, pois governar a colaboração é governar a trajetória de V(t) e seus agentes.</p>
+
+      <p>A leitura temporal não é um gerador de hipóteses testáveis que ligam a trajetória de cada componente a uma métrica de resultado.</p>
+      <div class="callout">
+        Se em V(0) a equipe (H) apresentava predominância de perfis Terceirizadores e em V(2) predominam Coautores e Parceiros, podemos esperar que a taxa de retrabalho originado de <em>workslop</em> tenha caído no mesmo intervalo.<br><br>
+        Se em V(0) o uso de IA pela organização (P) era proibido e em V(3) foi democratizado sob supervisão de uma liderança responsável e capacitada, esperamos a elevação de uma métrica como receita por colaborador.<br><br>
+        E se em V(0) o sistema (A_θ) não dispunha de <em>guardrails</em> e em V(5) possui múltiplas configurações de segurança em nível de sistema, esperamos verificar menos uso indevido e menos brechas de segurança.
+      </div>
+      <p>Em cada caso, a notação não apenas descreve a configuração, mas indica onde intervir e o que medir para saber se a intervenção funcionou.</p>
+
+      <p>A operacionalização que propomos para essa governança é um <strong>currículo de capacitação da liderança</strong>, que traduz o modelo em prática localizada na realidade da equipe. O currículo atua sobre os três componentes: desenvolve H pelo método de rigor e pelas atividades descritas na seção 3.1; qualifica a curadoria de P pela engenharia de contexto e políticas organizacionais sobre o uso de IA; e adequa o uso de A_θ ao território apropriado, à medida que a organização progride das fases em que o sistema apenas auxilia o trabalho humano para aquelas em que executa com autonomia crescente sob supervisão (CINANNI et al., 2026).</p>
+      <p>É no currículo, por fim, que a terceira lente sobre o indivíduo encontra seu lugar. A medição de como a competência de H se desenvolve no tempo não dispõe hoje de instrumento validado para esse construto específico. Instrumentos de aprendizagem experiencial, como o perfil proposto por Kolb (2021), oferecem um ponto de partida estrutural, pois foram validados para o estilo de aprendizagem; aplicá-los à colaboração com IA exige revalidação própria — que este trabalho se propõe a iniciar.</p>
+    </section>
+
+    <!-- ============ SEÇÃO 3 ============ -->
+    <section id="sec3">
+      <div class="eyebrow">Parte 3</div>
+      <h2>Considerações finais</h2>
+      <p>O percurso sustentou uma tese e abriu uma agenda. A tese é que a lacuna entre a adoção de IA e o valor que ela gera é metodológica antes de ser tecnológica, e que fechá-la é tarefa da liderança na governança do processo de transformação de times e da companhia pela implementação de IA em seus processos.</p>
+      <p>O modelo triádico, lido no tempo como V(t), oferece a essa governança um objeto preciso: a trajetória das competências do indivíduo, da qualidade do contexto e da adequação do sistema, observável nas superfícies em que esses componentes se conectam. E a tradução desse modelo em prática, na forma de um currículo de capacitação, mostra que a passagem da teoria à ação não exige nem mais nem menos tecnologia, mas governança estruturada da relação entre estes agentes.</p>
+
+      <p>V(t) é um framework teórico, cuja capacidade prescritiva permanece como proposição. Os instrumentos que mobilizamos carregam ressalvas:</p>
+      <ul class="limits-list">
+        <li>o Cubo da Soberania Cognitiva é uma heurística de reflexão sem validação psicométrica, e a ortogonalidade de seus eixos é hipótese de modelagem;</li>
+        <li>as atividades formativas que descrevemos apoiam-se, em parte, em material profissional não revisado por pares;</li>
+        <li>e o currículo é uma proposta de tradução, cujos resultados ainda não foram avaliados.</li>
+      </ul>
+
+      <p>Esses limites delineiam a agenda que o modelo inaugura. A validação de V(t) como instrumento prescritivo demanda estudo longitudinal que acompanhe a evolução de H, P e A_θ sob intervenções dirigidas às superfícies de interação. A medição da dimensão individual pede a operacionalização de métricas ainda a serem definidas.</p>
+      <blockquote>Permanece, por fim, a pergunta que move o trabalho e que a próxima etapa terá de sustentar com dados: quanto do valor que a IA promete não depende da tecnologia, mas de como a liderança ensina sua equipe a pensar com ela.</blockquote>
+    </section>
+
+    <!-- ============ REFERÊNCIAS ============ -->
+    <section id="refs">
+      <div class="eyebrow">Bibliografia</div>
+      <h2>Referências</h2>
+      <div class="refs">
+        <p>BAINBRIDGE, L. Ironies of automation. <em>Automatica</em>, v. 19, n. 6, p. 775-779, 1983.</p>
+        <p>BLOOM, B. S. <em>Taxonomy of educational objectives</em>: the classification of educational goals. New York: Longmans, Green, 1956.</p>
+        <p>CINANNI, M.; GURUNG, O. K.; GRUSCHE, T.; LEBERECHT, T. <em>Agentic Organizations</em>: how a new world of shared agency between humans and machines is emerging — and how it redefines your teams and marketplace. Hotwire, 2026.</p>
+        <p>DEWEY, J. <em>Experience and education</em>. New York: Macmillan, 1938.</p>
+        <p>EDWARDS, D.; EDWARDS, H.; ALMEIDA, P. Soberania cognitiva e coevolução humano-IA: um quadro estratégico. <em>Cadernos de Ideias de Liderança</em>. Núcleo de Liderança da FDC. Nova Lima: Fundação Dom Cabral, 2026.</p>
+        <p>GE, Y.; MEI, L.; DUAN, Z.; LI, T.; ZHENG, Y.; WANG, Y.; WANG, L.; YAO, J.; LIU, T.; CAI, Y.; BI, B.; GUO, F.; GUO, J.; LIU, S.; CHENG, X. A survey of vibe coding with large language models. <em>arXiv preprint</em>, arXiv:2510.12399, 2025.</p>
+        <p>GUATTARI, F. <em>Chaosmosis</em>: an ethico-aesthetic paradigm. Bloomington: Indiana University Press, 1995.</p>
+        <p>JI, J.; QIU, T.; CHEN, B.; ZHANG, B. et al. AI alignment: a comprehensive survey. <em>arXiv preprint</em>, arXiv:2310.19852v4, 2025.</p>
+        <p>KASTRUP, V.; PASSOS, E.; ESCÓSSIA, L. (Org.). <em>Pistas do método da cartografia</em>: pesquisa-intervenção e produção de subjetividade. Porto Alegre: Sulina, 2009.</p>
+        <p>KOLB, A. Y.; KOLB, D. A. <em>The Kolb Experiential Learning Profile</em>: a guide to ELT, KELP psychometrics and research on validity. Kaunakakai: Experience Based Learning Systems, 2021.</p>
+        <p>LEE, H.-P.; SARKAR, A.; TANKELEVITCH, L.; DROSOS, I.; RINTEL, S.; BANKS, R.; WILSON, N. The impact of generative AI on critical thinking: self-reported reductions in cognitive effort and confidence effects from a survey of knowledge workers. In: CHI CONFERENCE ON HUMAN FACTORS IN COMPUTING SYSTEMS, 2025, Yokohama. <em>Proceedings</em> […]. New York: ACM, 2025. DOI: 10.1145/3706598.3713778.</p>
+        <p>LONG, D.; MAGERKO, B. What is AI literacy? Competencies and design considerations. In: CHI CONFERENCE ON HUMAN FACTORS IN COMPUTING SYSTEMS, 2020, Honolulu. <em>Proceedings</em> […]. New York: ACM, 2020. DOI: 10.1145/3313831.3376727.</p>
+        <p>MATURANA, H. R.; VARELA, F. J. <em>Autopoiesis and cognition</em>: the realization of the living. Dordrecht: D. Reidel, 1980. (Boston Studies in the Philosophy of Science, v. 42).</p>
+        <p>MEI, L.; YAO, J.; GE, Y.; WANG, Y.; BI, B.; CAI, Y.; LIU, J.; LI, M.; LI, Z.-Z.; ZHANG, D.; ZHOU, C.; MAO, J.; XIA, T.; GUO, J.; LIU, S. et al. A survey of context engineering for large language models. <em>arXiv preprint</em>, arXiv:2507.13334, 2025.</p>
+        <p>MÉNDEZ-SUÁREZ, M.; CUKUSIC, M.; NINČEVIĆ-PAŠALIĆ, I. AI FoMO (fear of missing out) in the workplace. <em>SSRN Electronic Journal</em>, 2025. Disponível em: https://ssrn.com/abstract=5277122.</p>
+        <p>NIEDERHOFFER, K.; KELLERMAN, G. R.; LEE, A.; LIEBSCHER, A.; RAPUANO, K.; HANCOCK, J. T. AI-generated "workslop" is destroying productivity. <em>Harvard Business Review</em>, 22 set. 2025.</p>
+        <p>OMONIJO, S. O. <em>Critical thinking 101</em>: critical thinking in the age of AI. 2025. Material de divulgação profissional.</p>
+        <p>RIEDL, C.; WEIDMANN, B. Quantifying human-AI synergy. <em>arXiv preprint</em>, arXiv:2412.10380, 2025.</p>
+        <p>SINGLA, A.; SUKHAREVSKY, A.; HALL, B.; YEE, L.; CHUI, M. <em>The state of AI in 2025</em>: agents, innovation, and transformation. McKinsey Global Survey. New York: McKinsey & Company, nov. 2025.</p>
+        <p>SRIDHAR, S.; BASKAR, P.; GRIMES, J.; SAMPATHKUMAR, A. A comprehensive framework for human-AI collaborative decision making in intelligent retail environments. <em>Expert Systems With Applications</em>, v. 299, art. 130013, 2026. DOI: 10.1016/j.eswa.2025.130013.</p>
+        <p>WALTER, Y. Embracing the future of artificial intelligence in the classroom: the relevance of AI literacy, prompt engineering, and critical thinking in modern education. <em>International Journal of Educational Technology in Higher Education</em>, v. 21, art. 15, 2024. DOI: 10.1186/s41239-024-00448-3.</p>
+      </div>
+    </section>
+
+  </main>
+</div>
+
+<footer>
+  <div>Felipe Lipkin · Caderno de Ideias, Temática Liderança · Fundação Dom Cabral</div>
+  <div>fdc.org.br</div>
+</footer>
+
+</body>
+</html>
